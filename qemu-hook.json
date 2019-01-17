@@ -1,0 +1,90 @@
+{
+  "VMs": {
+    "vm1": {
+      "Interface": {
+        "VxLAN": {
+          "VNI": 42,
+          "TC": {
+            "Rate": 250,
+            "Burst": 256,
+            "Limit": 10240
+          },
+          "Source": {
+            "Name": "x-42"
+          },
+          "Target": {
+            "Name": "vx-9a0101"
+          }
+        },
+        "L3": {
+          "IPv4": [
+            "195.177.118.111"
+          ],
+          "IPv6": [
+            "2a02:2278:100:1::1"
+          ],
+          "TC": {
+            "Rate": 250,
+            "Burst": 256,
+            "Limit": 10240
+          },
+          "Upper": {
+            "Name": "vu-9a0101"
+          },
+          "Source": {
+            "Name": "vl-9a0101"
+          },
+          "Target": {
+            "Name": "if-9a0101"
+          }
+        },
+        "Uplink": {
+          "Name": "bond-wan"
+        }
+      }
+    },
+    "vm2": {
+      "Interface": {
+        "VxLAN": {
+          "VNI": 42,
+          "TC": {
+            "Rate": 250,
+            "Burst": 256,
+            "Limit": 10240
+          },
+          "Source": {
+            "Name": "x-42"
+          },
+          "Target": {
+            "Name": "vx-9a0102"
+          }
+        },
+        "L3": {
+          "IPv4": [
+            "195.177.118.112"
+          ],
+          "IPv6": [
+            "2a02:2278:100:2::1"
+          ],
+          "TC": {
+            "Rate": 250,
+            "Burst": 256,
+            "Limit": 10240
+          },
+          "Upper": {
+            "Name": "vu-9a0102"
+          },
+          "Source": {
+            "Name": "vl-9a0102"
+          },
+          "Target": {
+            "Name": "if-9a0102"
+          }
+        },
+        "Uplink": {
+          "Name": "bond-wan"
+        }
+      }
+    }
+  }
+}
