@@ -22,9 +22,9 @@ func main() {
 
 		// log hook exit
 		if err != nil {
-			Logger.Println("Graceful exit for libvirt, but errors occurred")
+			Logger.Println("graceful exit for libvirt, but errors occurred")
 		} else {
-			Logger.Println("Graceful exit for libvirt, no errors occurred")
+			Logger.Println("graceful exit for libvirt, no errors occurred")
 		}
 
 		// exit with 0 code, else libvirt daemon will fail to start VM
@@ -40,6 +40,8 @@ func main() {
 
 		// switch on: `qemu vm1 prepare {begin} -`
 		case "begin":
+
+			Logger.Println("hook: prepare, begin")
 
 			// get Libvirt Domain XML as object
 			domCfg, err := GetDomainXML(os.Stdin)
@@ -142,6 +144,8 @@ func main() {
 		// switch on: `qemu vm1 started {begin} -`
 		case "begin":
 
+			Logger.Println("hook: started, begin")
+
 			// get Libvirt Domain XML as object
 			domCfg, err := GetDomainXML(os.Stdin)
 			if err != nil {
@@ -187,6 +191,8 @@ func main() {
 
 		// switch on: `qemu vm1 stopped {end} -`
 		case "end":
+
+			Logger.Println("hook: stopped, end")
 
 			// get Libvirt Domain XML as object
 			domCfg, err := GetDomainXML(os.Stdin)
