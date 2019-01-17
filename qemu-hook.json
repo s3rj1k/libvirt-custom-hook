@@ -1,0 +1,48 @@
+{
+  "Interface": {
+    "Name": {
+      "Prefix": {
+        "VxLAN": {
+          "Source": "x-",
+          "Target": "vx-"
+        },
+        "Veth": {
+          "Upper": "vu-",
+          "Source": "vl-",
+          "Target": "if-"
+        }
+      }
+    },
+    "Uplink": {
+      "Name": "bond-wan"
+    }
+  },
+  "VMs": {
+    "vm1": {
+      "Interface": {
+        "ID": "9a0101",
+        "VxLAN": {
+          "VNI": 42,
+          "TC": {
+            "Rate": 250,
+            "Burst": 256,
+            "Limit": 10240
+          }
+        },
+        "L3": {
+          "IPv4": [
+            "195.177.118.111"
+          ],
+          "IPv6": [
+            "2a02:2278:100:1::1"
+          ],
+          "TC": {
+            "Rate": 250,
+            "Burst": 256,
+            "Limit": 10240
+          }
+        }
+      }
+    }
+  }
+}
