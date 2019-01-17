@@ -176,7 +176,6 @@ func main() {
 						GracefullExit(err)
 					}
 				}
-
 			}
 
 			GracefullExit(nil)
@@ -211,8 +210,6 @@ func main() {
 				if err != nil {
 					GracefullExit(err)
 				}
-
-				GracefullExit(err)
 			}
 
 			GracefullExit(nil)
