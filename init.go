@@ -25,10 +25,12 @@ var (
 // nolint: gochecknoinits
 func init() {
 
+	var err error
+
 	// flag for opening LogFile
 	var flag int
 
-	_, err := os.Stat(LogFilePath)
+	_, err = os.Stat(LogFilePath)
 
 	// if logfile does not exist - will also create the file
 	switch os.IsNotExist(err) {
@@ -39,7 +41,7 @@ func init() {
 	}
 
 	// create/open log file
-	Fd, err := os.OpenFile(LogFilePath, flag, 0666)
+	Fd, err = os.OpenFile(LogFilePath, flag, 0666)
 	if err != nil {
 		log.Fatalf("error opening log file: %v", err)
 	}

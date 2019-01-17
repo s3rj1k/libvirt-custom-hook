@@ -25,7 +25,8 @@ func ConfigureTrafficControlOnInterface(rate, burst, limit int64, dev string) er
 		"root", "handle", "1:", "tbf",
 		"rate", fmt.Sprintf("%dmbit", rate),
 		"burst", fmt.Sprintf("%dkb", burst),
-		"limit", strconv.FormatInt(limit, 10))
+		"limit", strconv.FormatInt(limit, 10),
+	)
 	if cmd.ReturnCode != 0 {
 		e := fmt.Errorf("%s running command '%s' failed with exit code '%d', output '%s'", errPrefix, cmd.Command, cmd.ReturnCode, cmd.CombinedOutput)
 		Logger.Println(e)

@@ -13,6 +13,7 @@ clean:
 deps:
 	# deps
 	$(GOGET) -u github.com/libvirt/libvirt-go-xml
+	$(GOGET) -u gopkg.in/go-playground/validator.v9
 
 	# linters
 	curl -sfL https://raw.githubusercontent.com/alecthomas/gometalinter/master/scripts/install.sh | sh -s -- -b $$GOPATH/bin

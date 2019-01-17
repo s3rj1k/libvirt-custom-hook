@@ -37,7 +37,7 @@ func EnableIPv6ForwardingOnInterface(dev string) error {
 		return e
 	}
 
-	// enable IPv6 forwarding globaly, this differs from IPv4 behavior, consult kernel docs
+	// enable IPv6 forwarding globally, this differs from IPv4 behavior, consult kernel docs
 	cmd = RunCommand("sysctl", "-w", "net.ipv6.conf.all.forwarding=1")
 	if cmd.ReturnCode != 0 {
 		e := fmt.Errorf("%s running command '%s' failed with exit code '%d', output '%s'", errPrefix, cmd.Command, cmd.ReturnCode, cmd.CombinedOutput)
