@@ -127,10 +127,9 @@ func main() {
 						GracefullExit(err)
 					}
 				}
-
 			}
 
-			GracefullExit(err)
+			GracefullExit(nil)
 
 		default:
 			GracefullExit(nil)
@@ -180,6 +179,8 @@ func main() {
 
 			}
 
+			GracefullExit(nil)
+
 		default:
 			GracefullExit(nil)
 		}
@@ -213,6 +214,8 @@ func main() {
 
 				GracefullExit(err)
 			}
+
+			GracefullExit(nil)
 
 		default:
 			GracefullExit(nil)
