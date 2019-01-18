@@ -1,5 +1,5 @@
 {
-  "VirtualMachineConfig": {
+  "VMs": {
     "vm1": {
       "Interface": {
         "VxLAN": {
