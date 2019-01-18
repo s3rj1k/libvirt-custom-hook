@@ -25,12 +25,12 @@ type VM struct {
 
 			// usually uplink
 			Source struct {
-				Name string `json:"Name" validate:"required,printascii,min=1,max=15"`
+				Name string `json:"Name" validate:"required,InterfaceName"`
 			} `json:"Source" validate:"required"`
 
 			// created by libvirt
 			Target struct {
-				Name string `json:"Name" validate:"required,printascii,min=1,max=15"`
+				Name string `json:"Name" validate:"required,InterfaceName"`
 			} `json:"Target" validate:"required"`
 
 			TC TC `json:"TC" validate:"required"`
@@ -39,28 +39,28 @@ type VM struct {
 		L3 struct {
 			// upper peer of Veth pair
 			Upper struct {
-				Name string `json:"Name" validate:"required,printascii,min=1,max=15"`
+				Name string `json:"Name" validate:"required,InterfaceName"`
 			} `json:"Upper" validate:"required"`
 
 			// lower peer of Veth pair
 			Source struct {
-				Name string `json:"Name" validate:"required,printascii,min=1,max=15"`
+				Name string `json:"Name" validate:"required,InterfaceName"`
 			} `json:"Source" validate:"required"`
 
 			// created by libvirt
 			Target struct {
-				Name string `json:"Name" validate:"required,printascii,min=1,max=15"`
+				Name string `json:"Name" validate:"required,InterfaceName"`
 			} `json:"Target" validate:"required"`
 
 			TC TC `json:"TC" validate:"required"`
 
 			IPv4 []string `json:"IPv4" validate:"required,unique,dive,ipv4"`
 
-			IPv6 []string `json:"IPv6" validate:"required,unique,dive,ipv6"`
+			IPv6 []string `json:"IPv6" validate:"required,unique,dive,ipv6,NotIPv6GW"`
 		} `json:"L3" validate:"required"`
 
 		Uplink struct {
-			Name string `json:"Name" validate:"required,printascii,min=1,max=15"`
+			Name string `json:"Name" validate:"required,InterfaceName"`
 		} `json:"Uplink" validate:"required"`
 	} `json:"Interface" validate:"required"`
 }

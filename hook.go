@@ -38,6 +38,11 @@ func (c *Config) PrepareBeginHook(domCfg *libvirtxml.Domain) error {
 		return err
 	}
 
+	// Validate Uplink interface existence
+	if !IsInterfaceExists(vm.Interface.Uplink.Name) {
+		return fmt.Errorf("hook: uplink interface '%s' does not exist", vm.Interface.Uplink.Name)
+	}
+
 	// Uplink v4
 	err = EnableIPv4ForwardingOnInterface(vm.Interface.Uplink.Name)
 	if err != nil {
