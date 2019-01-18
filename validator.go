@@ -9,7 +9,7 @@ import (
 
 // IsValidInterfaceName - validates name for interface (ascii, nospaces, max-length 15)
 func IsValidInterfaceName(fl validator.FieldLevel) bool {
-	return regexp.MustCompile("^([a-zA-Z0-9]{1,15})$").MatchString(fl.Field().String())
+	return regexp.MustCompile("^([a-zA-Z0-9-]{1,15})$").MatchString(fl.Field().String())
 }
 
 // IsNotIPv6NetworkAddress - validates that IPv6 is not network address for /64 of it self
