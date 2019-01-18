@@ -43,7 +43,7 @@ func main() {
 
 		// switch on: `qemu vm1 prepare {begin} -`
 		if strings.EqualFold(os.Args[3], "begin") {
-			Logger.Println("hook: prepare, begin")
+			Logger.Printf("hook: '%s' prepare, begin -\n", os.Args[1])
 
 			GracefullExit(c.PrepareBeginHook(domCfg))
 		}
@@ -53,7 +53,7 @@ func main() {
 
 		// switch on: `qemu vm1 start {begin} -`
 		if strings.EqualFold(os.Args[3], "begin") {
-			Logger.Println("hook: start, begin")
+			Logger.Printf("hook: '%s' start, begin -\n", os.Args[1])
 
 			GracefullExit(nil)
 		}
@@ -63,7 +63,7 @@ func main() {
 
 		// switch on: `qemu vm1 started {begin} -`
 		if strings.EqualFold(os.Args[3], "begin") {
-			Logger.Println("hook: started, begin")
+			Logger.Printf("hook: '%s' started, begin -\n", os.Args[1])
 
 			GracefullExit(c.StartedBeginHook(domCfg))
 		}
@@ -73,7 +73,7 @@ func main() {
 
 		// switch on: `qemu vm1 stopped {end} -`
 		if strings.EqualFold(os.Args[3], "end") {
-			Logger.Println("hook: stopped, end")
+			Logger.Printf("hook: '%s' stopped, end -\n", os.Args[1])
 
 			GracefullExit(c.StoppedEndHook(domCfg))
 		}
@@ -83,7 +83,7 @@ func main() {
 
 		// switch on: `qemu vm1 release {end} -`
 		if strings.EqualFold(os.Args[3], "end") {
-			Logger.Println("hook: release, end")
+			Logger.Printf("hook: '%s' release, end -\n", os.Args[1])
 
 			GracefullExit(nil)
 		}
@@ -93,7 +93,7 @@ func main() {
 
 		// switch on: `qemu vm1 migrate {begin} -`
 		if strings.EqualFold(os.Args[3], "begin") {
-			Logger.Println("hook: migrate, begin")
+			Logger.Printf("hook: '%s' migrate, begin -\n", os.Args[1])
 
 			GracefullExit(nil)
 		}
@@ -103,7 +103,7 @@ func main() {
 
 		// switch on: `qemu vm1 restore {begin} -`
 		if strings.EqualFold(os.Args[3], "begin") {
-			Logger.Println("hook: restore, begin")
+			Logger.Printf("hook: '%s' restore, begin -\n", os.Args[1])
 
 			GracefullExit(nil)
 		}
@@ -113,7 +113,7 @@ func main() {
 
 		// switch on: `qemu vm1 reconnect {begin} -`
 		if strings.EqualFold(os.Args[3], "begin") {
-			Logger.Println("hook: reconnect, begin")
+			Logger.Printf("hook: '%s' reconnect, begin -\n", os.Args[1])
 
 			GracefullExit(nil)
 		}
@@ -123,7 +123,7 @@ func main() {
 
 		// switch on: `qemu vm1 attach {begin} -`
 		if strings.EqualFold(os.Args[3], "begin") {
-			Logger.Println("hook: attach, begin")
+			Logger.Printf("hook: '%s' attach, begin -\n", os.Args[1])
 
 			GracefullExit(nil)
 		}
