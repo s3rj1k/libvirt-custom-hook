@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+
+	validator "gopkg.in/go-playground/validator.v9"
 )
 
 // TC - traffic control config, for basic traffic shaping
@@ -25,12 +27,12 @@ type VM struct {
 
 			// usually uplink
 			Source struct {
-				Name string `json:"Name" validate:"required,InterfaceName"`
+				Name string `json:"Name" validate:"required,iface"`
 			} `json:"Source" validate:"required"`
 
 			// created by libvirt
 			Target struct {
-				Name string `json:"Name" validate:"required,InterfaceName"`
+				Name string `json:"Name" validate:"required,iface"`
 			} `json:"Target" validate:"required"`
 
 			TC TC `json:"TC" validate:"required"`
@@ -39,28 +41,28 @@ type VM struct {
 		L3 struct {
 			// upper peer of Veth pair
 			Upper struct {
-				Name string `json:"Name" validate:"required,InterfaceName"`
+				Name string `json:"Name" validate:"required,iface"`
 			} `json:"Upper" validate:"required"`
 
 			// lower peer of Veth pair
 			Source struct {
-				Name string `json:"Name" validate:"required,InterfaceName"`
+				Name string `json:"Name" validate:"required,iface"`
 			} `json:"Source" validate:"required"`
 
 			// created by libvirt
 			Target struct {
-				Name string `json:"Name" validate:"required,InterfaceName"`
+				Name string `json:"Name" validate:"required,iface"`
 			} `json:"Target" validate:"required"`
 
 			TC TC `json:"TC" validate:"required"`
 
 			IPv4 []string `json:"IPv4" validate:"required,unique,dive,ipv4"`
 
-			IPv6 []string `json:"IPv6" validate:"required,unique,dive,ipv6,dive,NotIPv6GW"`
+			IPv6 []string `json:"IPv6" validate:"required,unique,dive,ipv6,dive,notGW6"`
 		} `json:"L3" validate:"required"`
 
 		Uplink struct {
-			Name string `json:"Name" validate:"required,InterfaceName"`
+			Name string `json:"Name" validate:"required,iface"`
 		} `json:"Uplink" validate:"required"`
 	} `json:"Interface" validate:"required"`
 }
@@ -91,6 +93,19 @@ func GetConfig(path string) (*Config, error) {
 	err = json.Unmarshal(data, c)
 	if err != nil {
 		return nil, fmt.Errorf("%s %s", errPrefix, err)
+	}
+
+	// initialize validator object
+	Validate = validator.New()
+
+	// register custom validation functions
+	err = Validate.RegisterValidation("iface", IsValidInterfaceName)
+	if err != nil {
+		Logger.Fatalf("validator error: %v", err)
+	}
+	err = Validate.RegisterValidation("notGW6", IsNotIPv6NetworkAddress)
+	if err != nil {
+		Logger.Fatalf("validator error: %v", err)
 	}
 
 	// additional structe validation
