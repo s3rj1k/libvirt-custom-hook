@@ -14,6 +14,9 @@ func (c *Config) LookupVMConfig(domCfg *libvirtxml.Domain) (VM, error) {
 	// declare variable for VM configuration description
 	var vm VM
 
+	// prefix for errors logging
+	const errPrefix = "vm config error:"
+
 	// check config for defined VM by UUID
 	vm, ok = c.VMs[domCfg.UUID]
 	if ok {
@@ -21,7 +24,11 @@ func (c *Config) LookupVMConfig(domCfg *libvirtxml.Domain) (VM, error) {
 		// run validator on VM config
 		err := Validate.Struct(vm)
 		if err != nil {
-			return VM{}, err
+			// log error, invalid config
+			e := fmt.Errorf("%s %s", errPrefix, err.Error())
+			Logger.Println(e)
+
+			return VM{}, e
 		}
 
 		return vm, nil
@@ -34,13 +41,21 @@ func (c *Config) LookupVMConfig(domCfg *libvirtxml.Domain) (VM, error) {
 		// run validator on VM config
 		err := Validate.Struct(vm)
 		if err != nil {
-			return VM{}, err
+			// log error, invalid config
+			e := fmt.Errorf("%s %s", errPrefix, err.Error())
+			Logger.Println(e)
+
+			return VM{}, e
 		}
 
 		return vm, nil
 	}
 
-	return VM{}, fmt.Errorf("no VM found in config for UUID='%s' or Name='%s'", domCfg.UUID, domCfg.Name)
+	// log error, no VM in config
+	e := fmt.Errorf("%s no VM found in config for UUID='%s' or Name='%s'", errPrefix, domCfg.UUID, domCfg.Name)
+	Logger.Println(e)
+
+	return VM{}, e
 }
 
 // PrepareBeginHook - hook for `qemu vm1 prepare begin -`
