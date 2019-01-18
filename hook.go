@@ -39,26 +39,23 @@ func (c *Config) PrepareBeginHook(domCfg *libvirtxml.Domain) error {
 	}
 
 	// Uplink v4
-	err = EnableIPv4ForwardingOnInterface(c.Interface.Uplink.Name)
+	err = EnableIPv4ForwardingOnInterface(vm.Interface.Uplink.Name)
 	if err != nil {
 		return err
 	}
 
 	// Uplink v6
-	err = EnableIPv6ForwardingOnInterface(c.Interface.Uplink.Name)
+	err = EnableIPv6ForwardingOnInterface(vm.Interface.Uplink.Name)
 	if err != nil {
 		return err
 	}
 
-	// upper interface name inside Veth pair, this device is used for L3 routing
-	upperVethDev := fmt.Sprintf("%s%s", c.Interface.Name.Prefix.Veth.Upper, vm.Interface.ID)
-
 	// VxLAN
 	if vm.Interface.VxLAN.VNI != 0 { // skip for Non-Defined VxLAN VNI
 		err = CreateVxLANInterface(
-			fmt.Sprintf("%s%d", c.Interface.Name.Prefix.VxLAN.Source, vm.Interface.VxLAN.VNI),
+			vm.Interface.VxLAN.Source.Name,
 			vm.Interface.VxLAN.VNI,
-			c.Interface.Uplink.Name,
+			vm.Interface.Uplink.Name,
 		)
 		if err != nil {
 			return err
@@ -67,8 +64,8 @@ func (c *Config) PrepareBeginHook(domCfg *libvirtxml.Domain) error {
 
 	// Veth
 	err = CreateVethInterface(
-		upperVethDev,
-		fmt.Sprintf("%s%s", c.Interface.Name.Prefix.Veth.Source, vm.Interface.ID),
+		vm.Interface.L3.Upper.Name,
+		vm.Interface.L3.Source.Name,
 	)
 	if err != nil {
 		return err
@@ -76,17 +73,17 @@ func (c *Config) PrepareBeginHook(domCfg *libvirtxml.Domain) error {
 
 	// IPv4
 	for _, ipv4 := range vm.Interface.L3.IPv4 {
-		err = AddStaticV4Route(ipv4, upperVethDev)
+		err = AddStaticV4Route(ipv4, vm.Interface.L3.Upper.Name)
 		if err != nil {
 			return err
 		}
 
-		err = EnableIPv4ProxyARPOnInterface(upperVethDev)
+		err = EnableIPv4ProxyARPOnInterface(vm.Interface.L3.Upper.Name)
 		if err != nil {
 			return err
 		}
 
-		err = EnableIPv4ForwardingOnInterface(upperVethDev)
+		err = EnableIPv4ForwardingOnInterface(vm.Interface.L3.Upper.Name)
 		if err != nil {
 			return err
 		}
@@ -94,22 +91,22 @@ func (c *Config) PrepareBeginHook(domCfg *libvirtxml.Domain) error {
 
 	// IPv6
 	for _, ipv6 := range vm.Interface.L3.IPv6 {
-		err = AddStaticV6Route(ipv6, upperVethDev)
+		err = AddStaticV6Route(ipv6, vm.Interface.L3.Upper.Name)
 		if err != nil {
 			return err
 		}
 
-		err = AddVMGatewayForIPv6(ipv6, upperVethDev)
+		err = AddVMGatewayForIPv6(ipv6, vm.Interface.L3.Upper.Name)
 		if err != nil {
 			return err
 		}
 
-		err = EnableIPv6ProxyNDPOnInterface(upperVethDev)
+		err = EnableIPv6ProxyNDPOnInterface(vm.Interface.L3.Upper.Name)
 		if err != nil {
 			return err
 		}
 
-		err = EnableIPv6ForwardingOnInterface(upperVethDev)
+		err = EnableIPv6ForwardingOnInterface(vm.Interface.L3.Upper.Name)
 		if err != nil {
 			return err
 		}
@@ -132,7 +129,7 @@ func (c *Config) StartedBeginHook(domCfg *libvirtxml.Domain) error {
 		vm.Interface.L3.TC.Rate,
 		vm.Interface.L3.TC.Burst,
 		vm.Interface.L3.TC.Limit,
-		fmt.Sprintf("%s%s", c.Interface.Name.Prefix.Veth.Target, vm.Interface.ID),
+		vm.Interface.L3.Target.Name,
 	)
 	if err != nil {
 		return err
@@ -144,7 +141,7 @@ func (c *Config) StartedBeginHook(domCfg *libvirtxml.Domain) error {
 			vm.Interface.VxLAN.TC.Rate,
 			vm.Interface.VxLAN.TC.Burst,
 			vm.Interface.VxLAN.TC.Limit,
-			fmt.Sprintf("%s%s", c.Interface.Name.Prefix.VxLAN.Target, vm.Interface.ID),
+			vm.Interface.VxLAN.Target.Name,
 		)
 		if err != nil {
 			return err
@@ -163,9 +160,6 @@ func (c *Config) StoppedEndHook(domCfg *libvirtxml.Domain) error {
 		return err
 	}
 
-	// upper interface name inside Veth pair, this device is used for L3 routing
-	upperVethDev := fmt.Sprintf("%s%s", c.Interface.Name.Prefix.Veth.Upper, vm.Interface.ID)
-
 	// Veth
-	return DestroyVethInterface(upperVethDev)
+	return DestroyVethInterface(vm.Interface.L3.Upper.Name)
 }

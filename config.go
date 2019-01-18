@@ -19,47 +19,55 @@ type TC struct {
 // VM - config per VM
 type VM struct {
 	Interface struct {
-		// 15(max interface length, kernel limit) = 12(max ID length) + 3(max prefix length)
-		ID string `json:"ID" validate:"required,printascii,min=1,max=12"`
-
 		VxLAN struct {
 			// assume that VNI == 0, no VxLAN
 			VNI int64 `json:"VNI" validate:"required,min=0,max=16777214"`
-			TC  TC    `json:"TC" validate:"required"`
+
+			// usually uplink
+			Source struct {
+				Name string `json:"Name" validate:"required,printascii,min=1,max=15"`
+			} `json:"Source" validate:"required"`
+
+			// created by libvirt
+			Target struct {
+				Name string `json:"Name" validate:"required,printascii,min=1,max=15"`
+			} `json:"Target" validate:"required"`
+
+			TC TC `json:"TC" validate:"required"`
 		} `json:"VxLAN" validate:"required"`
 
 		L3 struct {
-			IPv4 []string `json:"IPv4" validate:"required,unique,dive,ipv4"`
-			IPv6 []string `json:"IPv6" validate:"required,unique,dive,ipv6"`
-			TC   TC       `json:"TC" validate:"required"`
-		} `json:"L3" validate:"required"`
-	} `json:"Interface" validate:"required"`
-}
+			// upper peer of Veth pair
+			Upper struct {
+				Name string `json:"Name" validate:"required,printascii,min=1,max=15"`
+			} `json:"Upper" validate:"required"`
 
-// Interface - interface prefixes inside libvirt Domain XML and in hypervisor node
-type Interface struct {
-	Name struct {
-		Prefix struct {
-			VxLAN struct {
-				Source string `json:"Source" validate:"required,min=1,max=3,printascii"`
-				Target string `json:"Target" validate:"required,min=1,max=3,printascii"`
-			} `json:"VxLAN" validate:"required"`
-			Veth struct {
-				Upper  string `json:"Upper" validate:"required,min=1,max=3,printascii"`
-				Source string `json:"Source" validate:"required,min=1,max=3,printascii"`
-				Target string `json:"Target" validate:"required,min=1,max=3,printascii"`
-			} `json:"Veth" validate:"required"`
-		} `json:"Prefix" validate:"required"`
-	} `json:"Name" validate:"required"`
-	Uplink struct {
-		Name string `json:"Name" validate:"required,min=1,max=15"`
-	} `json:"Uplink" validate:"required"`
+			// lower peer of Veth pair
+			Source struct {
+				Name string `json:"Name" validate:"required,printascii,min=1,max=15"`
+			} `json:"Source" validate:"required"`
+
+			// created by libvirt
+			Target struct {
+				Name string `json:"Name" validate:"required,printascii,min=1,max=15"`
+			} `json:"Target" validate:"required"`
+
+			TC TC `json:"TC" validate:"required"`
+
+			IPv4 []string `json:"IPv4" validate:"required,unique,dive,ipv4"`
+
+			IPv6 []string `json:"IPv6" validate:"required,unique,dive,ipv6"`
+		} `json:"L3" validate:"required"`
+
+		Uplink struct {
+			Name string `json:"Name" validate:"required,printascii,min=1,max=15"`
+		} `json:"Uplink" validate:"required"`
+	} `json:"Interface" validate:"required"`
 }
 
 // Config - main hook config
 type Config struct {
-	Interface Interface     `json:"Interface" validate:"required"`
-	VMs       map[string]VM `json:"VMs" validate:"required"`
+	VMs map[string]VM `json:"VMs" validate:"required"`
 }
 
 // GetConfig - get application configuration

@@ -1,32 +1,19 @@
 {
-  "Interface": {
-    "Name": {
-      "Prefix": {
-        "VxLAN": {
-          "Source": "x-",
-          "Target": "vx-"
-        },
-        "Veth": {
-          "Upper": "vu-",
-          "Source": "vl-",
-          "Target": "if-"
-        }
-      }
-    },
-    "Uplink": {
-      "Name": "bond-wan"
-    }
-  },
-  "VMs": {
+  "VirtualMachineConfig": {
     "vm1": {
       "Interface": {
-        "ID": "9a0101",
         "VxLAN": {
           "VNI": 42,
           "TC": {
             "Rate": 250,
             "Burst": 256,
             "Limit": 10240
+          },
+          "Source": {
+            "Name": "x-42"
+          },
+          "Target": {
+            "Name": "vx-9a0101"
           }
         },
         "L3": {
@@ -40,19 +27,36 @@
             "Rate": 250,
             "Burst": 256,
             "Limit": 10240
+          },
+          "Upper": {
+            "Name": "vu-9a0101"
+          },
+          "Source": {
+            "Name": "vl-9a0101"
+          },
+          "Target": {
+            "Name": "if-9a0101"
           }
+        },
+        "Uplink": {
+          "Name": "bond-wan"
         }
       }
     },
     "vm2": {
       "Interface": {
-        "ID": "9a0102",
         "VxLAN": {
           "VNI": 42,
           "TC": {
             "Rate": 250,
             "Burst": 256,
             "Limit": 10240
+          },
+          "Source": {
+            "Name": "x-42"
+          },
+          "Target": {
+            "Name": "vx-9a0102"
           }
         },
         "L3": {
@@ -66,7 +70,19 @@
             "Rate": 250,
             "Burst": 256,
             "Limit": 10240
+          },
+          "Upper": {
+            "Name": "vu-9a0102"
+          },
+          "Source": {
+            "Name": "vl-9a0102"
+          },
+          "Target": {
+            "Name": "if-9a0102"
           }
+        },
+        "Uplink": {
+          "Name": "bond-wan"
         }
       }
     }
