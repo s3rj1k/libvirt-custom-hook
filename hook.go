@@ -17,12 +17,26 @@ func (c *Config) LookupVMConfig(domCfg *libvirtxml.Domain) (VM, error) {
 	// check config for defined VM by UUID
 	vm, ok = c.VMs[domCfg.UUID]
 	if ok {
+
+		// run validator on VM config
+		err := Validate.Struct(vm)
+		if err != nil {
+			return VM{}, err
+		}
+
 		return vm, nil
 	}
 
 	// check config for defined VM by Name
 	vm, ok = c.VMs[domCfg.Name]
 	if ok {
+
+		// run validator on VM config
+		err := Validate.Struct(vm)
+		if err != nil {
+			return VM{}, err
+		}
+
 		return vm, nil
 	}
 

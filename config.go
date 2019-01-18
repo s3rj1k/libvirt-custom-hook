@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-
-	validator "gopkg.in/go-playground/validator.v9"
 )
 
 // TC - traffic control config, for basic traffic shaping
@@ -58,7 +56,7 @@ type VM struct {
 
 			IPv4 []string `json:"IPv4" validate:"required,unique,dive,ipv4"`
 
-			IPv6 []string `json:"IPv6" validate:"required,unique,dive,ipv6,dive,notGW6"`
+			IPv6 []string `json:"IPv6" validate:"required,unique,dive,ipv6,notGW6"`
 		} `json:"L3" validate:"required"`
 
 		Uplink struct {
@@ -93,19 +91,6 @@ func GetConfig(path string) (*Config, error) {
 	err = json.Unmarshal(data, c)
 	if err != nil {
 		return nil, fmt.Errorf("%s %s", errPrefix, err)
-	}
-
-	// initialize validator object
-	Validate = validator.New()
-
-	// register custom validation functions
-	err = Validate.RegisterValidation("iface", IsValidInterfaceName)
-	if err != nil {
-		Logger.Fatalf("validator error: %v", err)
-	}
-	err = Validate.RegisterValidation("notGW6", IsNotIPv6NetworkAddress)
-	if err != nil {
-		Logger.Fatalf("validator error: %v", err)
 	}
 
 	// additional structe validation

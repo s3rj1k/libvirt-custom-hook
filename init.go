@@ -49,6 +49,19 @@ func init() {
 	// configure logger
 	Logger = log.New(Fd, "", log.Ldate|log.Ltime|log.Lshortfile)
 
+	// initialize validator object
+	Validate = validator.New()
+
+	// register custom validation functions
+	err = Validate.RegisterValidation("iface", IsValidInterfaceName)
+	if err != nil {
+		Logger.Fatalf("validator error: %v", err)
+	}
+	err = Validate.RegisterValidation("notGW6", IsNotIPv6NetworkAddress)
+	if err != nil {
+		Logger.Fatalf("validator error: %v", err)
+	}
+
 	// get config data
 	c, err = GetConfig(ConfigPath)
 	if err != nil {
