@@ -123,14 +123,14 @@ func EnableIPv4ProxyARPOnInterface(dev string) error {
 	return nil
 }
 
-// EnableIPv6ProxyNDPOnInterface - enables IPv4 ProxyNDP on specified interface
+// EnableIPv6ProxyNDPOnInterface - enables IPv6 ProxyNDP on specified interface
 func EnableIPv6ProxyNDPOnInterface(dev string) error {
 
 	// prefix for errors logging
 	const errPrefix = "sysctl config error:"
 
-	// enable IPv6 ProxyNDP: sysctl -w net.ipv4.conf.%s.proxy_ndp=1
-	err := SysctlSet(fmt.Sprintf("/proc/sys/net/ipv4/conf/%s/proxy_ndp", SanitizeInput(dev)), "1")
+	// enable IPv6 ProxyNDP: sysctl -w net.ipv6.conf.%s.proxy_ndp=1
+	err := SysctlSet(fmt.Sprintf("/proc/sys/net/ipv6/conf/%s/proxy_ndp", SanitizeInput(dev)), "1")
 	if err != nil {
 		e := fmt.Errorf("%s failed to enable IPv6 ProxyNDP for '%s' device: %s", errPrefix, SanitizeInput(dev), err.Error())
 		Logger.Println(e)

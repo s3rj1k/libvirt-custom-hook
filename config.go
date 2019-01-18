@@ -56,7 +56,7 @@ type VM struct {
 
 			IPv4 []string `json:"IPv4" validate:"required,unique,dive,ipv4"`
 
-			IPv6 []string `json:"IPv6" validate:"required,unique,dive,ipv6,NotIPv6GW"`
+			IPv6 []string `json:"IPv6" validate:"required,unique,dive,ipv6,dive,NotIPv6GW"`
 		} `json:"L3" validate:"required"`
 
 		Uplink struct {
