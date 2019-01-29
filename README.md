@@ -10,3 +10,4 @@ Install:
 
 Todo:
   - add tests for config validation
+  - sync some code fixes from `bridge` branch
