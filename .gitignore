@@ -1,2 +1,3 @@
 # Ignore qemu binary build
 qemu
+.idea

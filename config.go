@@ -6,6 +6,47 @@ import (
 	"io/ioutil"
 )
 
+// VM - config per VM
+type VM struct {
+	Interface *Interface `json:"Interface" validate:"required"`
+}
+
+// Interface - interfaces configuration for VM
+type Interface struct {
+	VxLAN  *VxLAN `json:"VxLAN" validate:"omitempty"`
+	L3     *L3    `json:"L3" validate:"required"`
+	Uplink *Iface `json:"Uplink" validate:"required"`
+}
+
+// VxLAN - Private LAN configuration
+type VxLAN struct {
+	// assume that VNI == 0, no VxLAN
+	VNI int64 `json:"VNI" validate:"required,min=1,max=16777214"`
+	// usually uplink
+	Source *Iface `json:"Source" validate:"required"`
+	// created by libvirt
+	Target *Iface `json:"Target" validate:"required"`
+	TC     *TC    `json:"TC" validate:"required"`
+}
+
+// L3 - Internet configuration for VM
+type L3 struct {
+	// upper peer of Veth pair
+	Upper *Iface `json:"Upper" validate:"required"`
+	// lower peer of Veth pair
+	Source *Iface `json:"Source" validate:"required"`
+	// created by libvirt
+	Target *Iface   `json:"Target" validate:"required"`
+	TC     *TC      `json:"TC" validate:"required"`
+	IPv4   []string `json:"IPv4" validate:"required,unique,dive,ipv4"`
+	IPv6   []string `json:"IPv6" validate:"unique,dive,ipv6,notGW6"`
+}
+
+// Iface - represents interface name
+type Iface struct {
+	Name string `json:"Name" validate:"required,iface"`
+}
+
 // TC - traffic control config, for basic traffic shaping
 type TC struct {
 	// mbit
@@ -14,55 +55,6 @@ type TC struct {
 	Burst int64 `json:"Burst" validate:"required,min=1"`
 	// packets
 	Limit int64 `json:"Limit" validate:"required,min=10240"`
-}
-
-// VM - config per VM
-type VM struct {
-	Interface struct {
-		VxLAN struct {
-			// assume that VNI == 0, no VxLAN
-			VNI int64 `json:"VNI" validate:"required,min=0,max=16777214"`
-
-			// usually uplink
-			Source struct {
-				Name string `json:"Name" validate:"required,iface"`
-			} `json:"Source" validate:"required"`
-
-			// created by libvirt
-			Target struct {
-				Name string `json:"Name" validate:"required,iface"`
-			} `json:"Target" validate:"required"`
-
-			TC TC `json:"TC" validate:"required"`
-		} `json:"VxLAN" validate:"required"`
-
-		L3 struct {
-			// upper peer of Veth pair
-			Upper struct {
-				Name string `json:"Name" validate:"required,iface"`
-			} `json:"Upper" validate:"required"`
-
-			// lower peer of Veth pair
-			Source struct {
-				Name string `json:"Name" validate:"required,iface"`
-			} `json:"Source" validate:"required"`
-
-			// created by libvirt
-			Target struct {
-				Name string `json:"Name" validate:"required,iface"`
-			} `json:"Target" validate:"required"`
-
-			TC TC `json:"TC" validate:"required"`
-
-			IPv4 []string `json:"IPv4" validate:"required,unique,dive,ipv4"`
-
-			IPv6 []string `json:"IPv6" validate:"unique,dive,ipv6,notGW6"`
-		} `json:"L3" validate:"required"`
-
-		Uplink struct {
-			Name string `json:"Name" validate:"required,iface"`
-		} `json:"Uplink" validate:"required"`
-	} `json:"Interface" validate:"required"`
 }
 
 // Config - main hook config

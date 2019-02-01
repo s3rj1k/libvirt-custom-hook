@@ -85,7 +85,7 @@ func (c *Config) PrepareBeginHook(domCfg *libvirtxml.Domain) error {
 	}
 
 	// VxLAN
-	if vm.Interface.VxLAN.VNI != 0 { // skip for Non-Defined VxLAN VNI
+	if vm.Interface.VxLAN != nil { // skip for Non-Defined VxLAN
 		err = CreateVxLANInterface(
 			vm.Interface.VxLAN.Source.Name,
 			vm.Interface.VxLAN.VNI,
